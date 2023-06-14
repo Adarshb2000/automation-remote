@@ -1,0 +1,116 @@
+import {
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+
+const ConstructRoom = () => {
+  const boxLength = 15
+  const [states, setStates] = useState([])
+
+  const outer = useRef(null)
+  const container = useRef(document.createElement('div'))
+
+  useEffect(() => {
+    const M = parseInt(outer.current.offsetWidth / boxLength)
+    const N = parseInt(outer.current.offsetHeight / boxLength)
+
+    container.current.style.width = M * boxLength + 'px'
+    container.current.style.height = N * boxLength + 'px'
+
+    const states = Array.from({ length: 30 }, () => Array(15).fill(true))
+
+    const n = states.length
+    const m = states[0].length
+
+    const newArray = Array.from({ length: N }, () => Array(M).fill(false))
+
+    const ratio = Math.min(M / m, N / n)
+    const scale = parseInt(ratio + (ratio > 1.15 ? -0 : 0))
+    const px = M - m * scale
+    const pl = parseInt(px / 2)
+    const pr = px - pl
+    const py = N - n * scale
+
+    if (scale < 1) {
+      newArray.forEach((row) => row.fill(true))
+      setStates(newArray)
+      return
+    }
+
+    for (let i = 0, index = M * parseInt(py / 2); i < n; i += 1) {
+      for (let k = 0; k < scale; k += 1) {
+        index += pl
+        for (let j = 0; j < m; j += 1) {
+          for (let l = 0; l < scale; l += 1) {
+            newArray[parseInt(index / M)][index % M] = states[i][j]
+            index += 1
+          }
+        }
+        index += pr
+      }
+    }
+    setStates(newArray)
+  }, [outer.current?.offsetHeight]) // fix this later
+
+  return (
+    <div className="flex flex-col md:flex-row-reverse gap-2 justify-start items-center py-2 px-4 h-screen w-screen">
+      <DragDropContext onDragEnd={() => { }}>
+        <div
+          id="blehh"
+          className="flex md:w-fit md:h-full w-full h-fit bg-rose-200 rounded-md px-2 py-1 appliances"
+        >
+          <div
+            className="h-[30px] w-[30px] bg-blue-400 flex justify-center rounded-md items-center appliance"
+          >
+            <svg
+              className="w-6 h-6 dark:text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+              <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
+              ></path>
+            </svg>
+          </div>
+        </div>
+        <div ref={outer} className="w-full h-full outline">
+          <div
+            ref={container}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(auto-fill, ${boxLength}px)`,
+            }}
+          >
+            <Droppable droppableId='anjkcw'>
+
+            {(provided) => states.map((N, i) =>
+              N.map((state, j) => (
+                <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                key={String(i) + j}
+                className={`h-[${boxLength}px] w-[${boxLength}px] outline outline-black outline-[0.5px] ${state ? 'bg-gray-500' : 'bg-black'
+              } ${state ? 'droppable' : ''}`}
+              ></div>
+              ))
+              )}
+              </Droppable>
+          </div>
+        </div>
+      </DragDropContext>
+    </div>
+  )
+}
+
+export default ConstructRoom

@@ -1,0 +1,9 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 20px);
+  /* @apply outline outline-black; */
+}
+
+.container > div {
+  @apply p-0 m-0 w-5 h-5 bg-red-200;
+}

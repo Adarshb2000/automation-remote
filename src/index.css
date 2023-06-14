@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.button1 {
+  @apply bg-slate-900 text-white;
+}
+.container {
+  @apply flex flex-col content-around items-center h-full w-screen;
+}
+
+.box {
+  @apply flex-row bg-red-700 text-white text-center w-20 h-20;
+}
+
+.grid0 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 50px);
+}
+
+.grid1 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 10px);
+}
+
+.child {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  text-decoration-color: black;
+}
+.child1 {
+  @apply bg-red-500 text-black;
+}
